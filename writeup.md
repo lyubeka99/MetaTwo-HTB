@@ -27,7 +27,7 @@ After a bit of research about the best hacking tools for WordPress I came accros
 ```
 wpscan --url metapress.htb --enumerate --api-token <API TOKEN>
 ```
-A lot of useful information comes up. Some of the highlights:
+A lot of useful information comes up. We are dealing with WP version 5.6.2. Another highlight of the scan:
 ```
 [+] admin
  | Found By: Author Posts - Author Pattern (Passive Detection)
@@ -41,4 +41,6 @@ A lot of useful information comes up. Some of the highlights:
  |  Author Id Brute Forcing - Author Pattern (Aggressive Detection)
  |  Login Error Messages (Aggressive Detection)
 ```
-Now we know there is an author account. The output also contains info that this WP version is vulnerable and it should list a handful of vulnerabilities.
+Now we know there is an author account. The output also contains info that this WP version is vulnerable and it should list a handful of vulnerabilities. The author part may come in handy but how do we choose from all of these vulnerabilities? At this point I was quite confused myself. So, I went on and inspected some of the traffic with ```burpsuite```. The main functionality of the website is making bookings for an event. At closer inspection, the metapress.htb/events/ page reveals that the "bookingpress-appointment-booking" plugin is used. It is quite confusing why the wpscan tool didn't find it. If you had a similar problem and know the solution, please do no shy away from sharing with me. 
+
+
